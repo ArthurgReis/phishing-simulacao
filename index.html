@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificação Oficial</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 20px;
+      color: #c40000;
+    }
+
+    p {
+      font-size: 16px;
+      color: #333;
+    }
+
+    .alert {
+      font-weight: bold;
+      color: #c40000;
+      margin: 15px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .footer {
+      margin-top: 15px;
+      font-size: 12px;
+      color: gray;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>⚠️ Notificação Urgente</h1>
+
+    <p>
+      Identificamos uma pendência vinculada ao seu CPF junto ao sistema nacional.
+    </p>
+
+    <p class="alert">
+      Regularize agora e evite restrições no seu nome.
+    </p>
+
+    <button onclick="continuar()">CLIQUE AQUI PARA RESOLVER</button>
+
+    <div class="footer">
+      Atendimento disponível por tempo limitado.
+    </div>
+  </div>
+
+  <script>
+    function continuar() {
+      window.location.href = "alerta.html";
+    }
+  </script>
+
+</body>
+</html>
