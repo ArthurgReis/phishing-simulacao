@@ -97,13 +97,21 @@
       console.error(error);
     }
 
-    document.getElementById("btn-resolver").addEventListener("click", async () => {
+    document.getElementById("btn-resolver").addEventListener("click", async (event) => {
+      event.preventDefault();
+      
       const tempoClique = Date.now();
       
+      const operacaoFirebase = setDoc(doc(db, "visitas", userId), {
+        clique: tempoClique
+      }, { merge: true });
+      
+      const limiteTempo = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Timeout de rede")), 1500)
+      );
+
       try {
-        await setDoc(doc(db, "visitas", userId), {
-          clique: tempoClique
-        }, { merge: true });
+        await Promise.race([operacaoFirebase, limiteTempo]);
       } catch (error) {
         console.error(error);
       } finally {
