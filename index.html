@@ -92,4 +92,46 @@
   </script>
 
 </body>
+  <!-- SEU HTML AQUI -->
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB5dUXEMJ8OBlEidkOWYl5L4N3g5PAce10",
+    authDomain: "phishing-simulacao.firebaseapp.com",
+    projectId: "phishing-simulacao",
+    storageBucket: "phishing-simulacao.firebasestorage.app",
+    messagingSenderId: "408713740813",
+    appId: "1:408713740813:web:b87b61f8c74750214e4b44"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let userId = localStorage.getItem("user_id");
+  if (!userId) {
+    userId = Math.random().toString(36).substring(2);
+    localStorage.setItem("user_id", userId);
+  }
+
+  const inicio = Date.now();
+
+  await setDoc(doc(db, "visitas", userId), {
+    abertura: inicio
+  });
+
+  window.continuar = async function() {
+    const tempoClique = Date.now();
+
+    await updateDoc(doc(db, "visitas", userId), {
+      clique: tempoClique
+    });
+
+    window.location.href = "alerta.html";
+  };
+</script>
+
+</body>
 </html>
